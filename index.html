@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="night">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>OmniDuo — comenta QUERO, recebe no direct</title>
+<link rel="stylesheet" href="styles/tokens.css">
+</head>
+<body>
+<a href="#stage" style="position:absolute;left:-9999px;top:8px;z-index:99;background:var(--lav);color:#1c1430;padding:10px 16px;border-radius:10px" onfocus="this.style.left='8px'" onblur="this.style.left='-9999px'">Pular para o conteúdo</a>
+
+<!-- LOGIN (img4) : tela inicial, libera o Duo -->
+<div class="auth-wrap" id="authWrap">
+  <svg class="auth-blob" style="top:-120px;left:-120px" width="420" height="420" viewBox="0 0 420 420" aria-hidden="true"><ellipse cx="210" cy="210" rx="200" ry="140" fill="#8b5cf6" opacity=".35" transform="rotate(-18 210 210)"/></svg>
+  <svg class="auth-blob" style="bottom:-140px;right:-100px" width="480" height="480" viewBox="0 0 480 480" aria-hidden="true"><path d="M40 400C140 300 120 180 240 140s180-40 200 60-80 180-200 200S80 440 40 400Z" fill="#3b5af6" opacity=".3"/></svg>
+  <form class="liquid auth-card" id="loginForm" novalidate>
+    <div class="auth-logo" aria-hidden="true">OD</div>
+    <p style="margin:0;font-size:13px;letter-spacing:.14em;color:var(--ink-3)">OMNIDUO</p>
+    <h1>Welcome Back</h1>
+    <label for="email">Email address</label>
+    <input id="email" name="email" type="email" autocomplete="email" placeholder="voce@loja.com" required>
+    <label for="pass">Password</label>
+    <input id="pass" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required minlength="4">
+    <a class="auth-forgot" href="#" id="forgot">Forget Password?</a>
+    <p class="auth-err" id="authErr" role="alert"></p>
+    <button class="auth-btn" type="submit">Login</button>
+    <p class="auth-switch">Are You New Member? <a href="#" id="signup">Sign UP</a></p>
+  </form>
+</div>
+
+<header class="topbar" id="topbar" hidden>
+  <div class="brand">
+    <div class="mark">OD</div>
+    <div><b>OmniDuo</b><small>Instagram → WhatsApp · liquid dock</small></div>
+  </div>
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Modo Duo">
+      <button id="btnClosed" aria-pressed="true">Fechada 5.4”</button>
+      <button id="btnOpen" aria-pressed="false">Aberta 7.6”</button>
+    </div>
+    <div class="seg" role="group" aria-label="Tema">
+      <button id="btnNight" aria-pressed="true">Night</button>
+      <button id="btnDay" aria-pressed="false">Day</button>
+    </div>
+    <div class="seg" role="group" aria-label="Conta">
+      <button id="btnLogout">Sair</button>
+    </div>
+  </div>
+</header>
+
+<main class="stage" id="stage" hidden>
+<div class="duo" id="duo">
+<div class="device">
+<div class="screen">
+
+  <!-- FECHADA -->
+  <section class="closed-view" aria-label="Duo fechado">
+    <div class="statusbar"><span>9:41</span><span>OmniDuo · Duo 5.4”</span><span>5G</span></div>
+    <div class="hero">
+      <div class="hero-card">
+        <span class="kicker">Reel sorteio</span>
+        <h1>Comenta <span>QUERO</span> que eu te mando no direct.</h1>
+        <div class="stats">
+          <div class="stat"><b>4.832</b><span>comentários</span></div>
+          <div class="stat"><b>3.191</b><span>DMs enviadas</span></div>
+          <div class="stat"><b>842</b><span>leads p/ Zap</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="notif-stack" id="notifStack" aria-live="polite"></div>
+    <div class="cta-row">
+      <button class="btn lav">Ativar campanha QUERO</button>
+      <button class="btn ghost">Agendar reel</button>
+    </div>
+    <nav class="liquid liquid-dock" aria-label="Navegação principal">
+      <div class="notch" id="notchClosed" aria-hidden="true"></div>
+      <div class="dock-items" role="tablist">
+        <button class="on" role="tab" aria-selected="true" data-icon="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Campanhas</button>
+        <button role="tab" aria-selected="false" data-icon="inbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l2.5-8h13L21 13v6H3z"/><path d="M3 13l4 4h10l4-4"/></svg>Inbox</button>
+        <button role="tab" aria-selected="false" data-icon="crm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg>CRM</button>
+        <button role="tab" aria-selected="false" data-icon="agenda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.5"/><path d="M4 21c1.5-4 5-5.5 8-5.5s6.5 1.5 8 5.5"/></svg>Agenda</button>
+      </div>
+    </nav>
+  </section>
+
+  <!-- ABERTA (img1: rail + canvas + stack) -->
+  <section class="open-view" aria-label="Duo aberto">
+    <div class="liquid rail" aria-label="Rail lateral">
+      <button class="on" aria-label="Campanhas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></button>
+      <button aria-label="Inbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 13l2.5-8h13L21 13v6H3z"/><path d="M3 13l4 4h10l4-4"/></svg></button>
+      <button aria-label="CRM"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg></button>
+      <button aria-label="Agenda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M4 21c1.5-4 5-5.5 8-5.5s6.5 1.5 8 5.5"/></svg></button>
+    </div>
+    <div class="col main">
+      <div class="pane">
+        <h2>Campanhas ativas</h2>
+        <p class="sub">Private reply · 750/hora · 1 DM por comentário</p>
+        <div class="camp"><div class="thumb">Q</div><div><b>Sorteio whey — comenta QUERO</b><span>reel específico · 4.832 comentários</span></div><span class="pill">ATIVA</span></div>
+        <div class="camp"><div class="thumb">P</div><div><b>Tabela de preços — comenta PREÇO</b><span>qualquer post · 1.204 comentários</span></div><span class="pill">ATIVA</span></div>
+        <div class="camp"><div class="thumb">S</div><div><b>Live de dúvidas — comenta LINK</b><span>próximo post · rascunho</span></div><span class="pill">PAUSADA</span></div>
+      </div>
+      <div class="pane">
+        <h2>Inbox — detalhe</h2>
+        <p class="sub">Janela 24h · fora dela só Marketing 1/48h</p>
+        <div class="thread" style="padding:0">
+          <div class="msg in">Comentou PREÇO no carrossel</div>
+          <div class="msg out">Te mandei a tabela no privado, Rafa. Quer no Zap também?</div>
+        </div>
+        <div class="composer" style="margin-top:12px">
+          <button aria-label="Adicionar">+</button>
+          <input type="text" placeholder="Responder como OmniDuo…" aria-label="Responder">
+        </div>
+      </div>
+    </div>
+    <div class="col stack">
+      <div class="pane">
+        <h2>CRM — ponte WhatsApp</h2>
+        <p class="sub">Origem rastreada · wa.me + export</p>
+        <div class="kanban">
+          <div class="kcol"><h3>Novo</h3><div class="lead"><b>@camila.fit</b><small>reel 12/09 · QUERO</small></div><div class="lead"><b>@rafa.lima</b><small>reel 12/09 · QUERO</small></div></div>
+          <div class="kcol"><h3>Zap</h3><div class="lead"><b>@ju.costa</b><small>wa.me · 14:02</small></div></div>
+          <div class="kcol"><h3>Fechado</h3><div class="lead"><b>@tati.muscle</b><small>kit reservado</small></div></div>
+        </div>
+      </div>
+      <div class="pane">
+        <h2>Agenda</h2>
+        <p class="sub">Content Publishing API</p>
+        <div class="sched-row"><span>SEG 18h — reel sorteio</span><b>Agendado</b></div>
+        <div class="sched-row"><span>QUA 12h — carrossel tabela</span><b>Rascunho</b></div>
+        <div class="sched-row"><span>SEX 19h — live + LINK</span><b>Na fila</b></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</div>
+</div>
+</main>
+
+<p class="hint" id="hint" hidden>Dica: aperte <kbd>F</kbd> para dobrar/desdobrar, <kbd>T</kbd> para trocar Night / Day.</p>
+
+<script src="js/data.mock.js"></script>
+<script src="js/api.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
