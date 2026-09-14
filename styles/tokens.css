@@ -108,10 +108,27 @@ body{
 .device{border-radius:44px;padding:12px;background:linear-gradient(180deg,#241645,#0e0722);border:1px solid var(--line);box-shadow:var(--shadow)}
 .screen{border-radius:34px;overflow:hidden;background:var(--bg);min-height:720px;display:flex}
 .duo.open .screen{min-height:640px}
-.closed-view{display:flex;flex-direction:column;width:100%;padding-bottom:6px}
-/* notificacoes tela fechada: pilha iOS, um lado so */
-.notif-stack{padding:10px 14px;display:flex;flex-direction:column;gap:10px}
-.notif{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:18px;background:var(--surface);border:1px solid var(--line);font-size:13.5px;line-height:1.4}
+.closed-view{display:flex;flex-direction:column;width:100%;padding-bottom:0;position:relative}
+/* home em camadas: KPI -> sheet sobreposta -> dock flutuante sobre a sheet */
+.hero{padding:10px 14px 0}
+/* notificacoes em bottom-sheet estilo ref2, um lado so */
+.sheet{
+  position:relative;z-index:2;flex:1;
+  margin:14px 10px 0;border-radius:28px 28px 0 0;
+  background:linear-gradient(180deg,rgba(46,30,80,.55),rgba(20,11,40,.62));
+  backdrop-filter:blur(26px) saturate(1.8);
+  -webkit-backdrop-filter:blur(26px) saturate(1.8);
+  border:1px solid var(--line);border-bottom:0;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 -18px 44px rgba(0,0,0,.35);
+  transition:transform .34s var(--spring);
+  contain:layout style paint;
+}
+.sheet-handle{display:flex;justify-content:center;padding:10px 0 2px;cursor:grab;touch-action:none;border-radius:28px 28px 0 0}
+.sheet-handle:active{cursor:grabbing}
+.sheet-handle .grip{width:44px;height:5px;border-radius:999px;background:rgba(255,255,255,.85);box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.notif-stack{padding:8px 12px 90px;display:flex;flex-direction:column;gap:10px;max-height:276px;overflow:hidden}
+.sheet.open .notif-stack{max-height:none}
+.notif{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:18px;background:rgba(255,255,255,.06);backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5);border:1px solid var(--line);font-size:13.5px;line-height:1.4}
 .n-icon{width:38px;height:38px;flex:none;border-radius:11px;display:grid;place-items:center;font:800 12px inherit;background:var(--lav-soft);color:var(--lav);border:1px solid var(--line)}
 .notif b{display:block;font-size:11.5px;color:var(--ink-3);font-weight:700;letter-spacing:.02em;margin-bottom:2px}
 .notif span{color:var(--ink)}
@@ -120,33 +137,43 @@ body{
 .duo.open .open-view{display:flex}
 .statusbar{display:flex;justify-content:space-between;align-items:center;padding:12px 18px 6px;font-size:12px;color:var(--ink-3);font-weight:600}
 .hero{padding:10px 14px 4px}
-.hero-card{padding:18px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line)}
+.hero-card{padding:18px;border-radius:var(--r-lg);background:rgba(255,255,255,.06);backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5);border:1px solid var(--line)}
 .hero-card h1{margin:8px 0 6px;font-size:28px;line-height:1.08;letter-spacing:-.03em}
 .hero-card h1 span{color:var(--lav)}
 .kicker{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--lav);background:var(--lav-soft);border:1px solid var(--line);padding:6px 10px;border-radius:999px}
 .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px}
-.stat{padding:12px;border-radius:var(--r-md);border:1px solid var(--line);background:var(--surface)}
+.stat{padding:12px;border-radius:var(--r-md);border:1px solid var(--line);background:rgba(255,255,255,.05);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
 .stat b{font-size:19px;letter-spacing:-.02em;display:block;font-variant-numeric:tabular-nums}
 .stat span{font-size:11px;color:var(--ink-3);font-weight:600}
 .thread{padding:10px 14px;display:flex;flex-direction:column;gap:10px}
 .msg{max-width:86%;padding:11px 13px;border-radius:16px;font-size:14px;line-height:1.45}
 .msg.in{background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:6px;align-self:flex-start}
 .msg.out{background:#241645;color:var(--ink);border:1px solid var(--line);border-bottom-right-radius:6px;align-self:flex-end}
-.cta-row{padding:6px 14px 4px;display:flex;gap:10px}
+.cta-row{padding:12px 0 0;display:flex;gap:10px}
 .btn{flex:1;border-radius:999px;padding:14px 16px;font:700 14px/1 inherit;cursor:pointer;min-height:48px;transition:transform .2s var(--ease)}
 .btn:active{transform:scale(.98)}
 .btn.lav{background:var(--lav);border:0;color:#1c1430}
 .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
-/* liquid dock img2+img3 */
-.liquid-dock{position:relative;margin:30px 14px 14px;padding:10px 10px 10px;display:flex;border-radius:26px;isolation:isolate}
-.liquid-dock .notch{position:absolute;top:-32px;left:0;width:60px;height:60px;border-radius:50%;background:var(--neon);display:grid;place-items:center;color:var(--neon-ink);box-shadow:0 10px 24px rgba(92,255,107,.35),0 0 0 6px var(--bg);transition:transform .32s var(--spring);z-index:3}
-.liquid-dock .notch svg{width:24px;height:24px;display:block}
-.dock-items{display:flex;flex:1;justify-content:space-around;position:relative;z-index:1}
-.dock-items button{border:0;background:transparent;color:var(--ink-3);font:600 10px inherit;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:8px 10px;min-width:62px;min-height:56px;border-radius:14px;white-space:nowrap}
+/* liquid dock: slot concavo + aba ativa em circulo verde elevado (ref img2) */
+.liquid-dock{position:relative;z-index:3;margin:-58px 14px 14px;padding:0;display:flex;isolation:isolate;overflow:visible}
+.dock-bg{
+  position:absolute;inset:0;border-radius:26px;z-index:0;
+  background:linear-gradient(180deg,rgba(46,30,80,.6),rgba(18,10,36,.68));
+  backdrop-filter:blur(26px) saturate(1.8);
+  -webkit-backdrop-filter:blur(26px) saturate(1.8);
+  border:1px solid var(--line);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2),var(--shadow);
+  -webkit-mask-image:radial-gradient(circle 36px at var(--notch-x,52px) 6px,transparent 34px,#000 36px);
+  mask-image:radial-gradient(circle 36px at var(--notch-x,52px) 6px,transparent 34px,#000 36px);
+}
+.dock-items{display:flex;flex:1;justify-content:space-around;align-items:flex-start;position:relative;z-index:1;padding:12px 10px}
+.dock-items button{border:0;background:transparent;color:var(--ink-3);font:600 10px inherit;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:6px 10px;min-width:62px;min-height:56px;border-radius:14px;white-space:nowrap;transition:color .2s}
 .dock-items button svg{width:22px;height:22px}
-.dock-items button.on{color:var(--ink-3)}
-.dock-items button.on svg{opacity:0}
-.dock-items button:focus-visible,.seg button:focus-visible,.btn:focus-visible,.rail button:focus-visible{outline:3px solid var(--lav);outline-offset:2px}
+.dock-items button .lbl{line-height:1.2}
+.dock-items button.on{width:58px;height:58px;flex:none;border-radius:50%;background:var(--neon);color:var(--neon-ink);margin-top:-38px;padding:0;justify-content:center;gap:0;min-width:0;min-height:0;box-shadow:0 12px 26px rgba(92,255,107,.4),0 0 0 6px rgba(21,10,42,.9);transition:transform .3s var(--spring),background-color .2s}
+.dock-items button.on svg{width:26px;height:26px}
+.dock-items button.on .lbl{display:none}
+.dock-items button:focus-visible,.seg button:focus-visible,.btn:focus-visible,.rail button:focus-visible,.sheet-handle:focus-visible{outline:3px solid var(--lav);outline-offset:2px}
 /* open layout img1: rail + canvas + stack */
 .rail{width:64px;flex:none;border-radius:20px;padding:10px 0;display:flex;flex-direction:column;align-items:center;gap:6px}
 .rail button{width:44px;height:44px;border-radius:14px;border:1px solid transparent;background:transparent;color:var(--ink-3);cursor:pointer;display:grid;place-items:center}
@@ -182,5 +209,6 @@ kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;paddi
 @media (max-width:760px){.duo.open{width:100%}.open-view{flex-direction:column}.kanban{grid-template-columns:1fr}.rail{flex-direction:row;width:100%}}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
-  .liquid-dock .notch{transition:none}
+  .sheet{transition:none}
+  .dock-items button.on{transition:none}
 }

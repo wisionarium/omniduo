@@ -66,19 +66,22 @@
           <div class="stat"><b>842</b><span>leads p/ Zap</span></div>
         </div>
       </div>
+      <div class="cta-row">
+        <button class="btn lav">Ativar campanha QUERO</button>
+        <button class="btn ghost">Agendar reel</button>
+      </div>
     </div>
-    <div class="notif-stack" id="notifStack" aria-live="polite"></div>
-    <div class="cta-row">
-      <button class="btn lav">Ativar campanha QUERO</button>
-      <button class="btn ghost">Agendar reel</button>
-    </div>
-    <nav class="liquid liquid-dock" aria-label="Navegação principal">
-      <div class="notch" id="notchClosed" aria-hidden="true"></div>
+    <section class="sheet" id="sheet" aria-label="Notificações">
+      <div class="sheet-handle" id="sheetHandle" role="slider" tabindex="0" aria-label="Expandir notificações" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0"><span class="grip"></span></div>
+      <div class="notif-stack" id="notifStack" aria-live="polite"></div>
+    </section>
+    <nav class="liquid-dock" aria-label="Navegação principal">
+      <div class="dock-bg" aria-hidden="true"></div>
       <div class="dock-items" role="tablist">
-        <button class="on" role="tab" aria-selected="true" data-icon="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Campanhas</button>
-        <button role="tab" aria-selected="false" data-icon="inbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l2.5-8h13L21 13v6H3z"/><path d="M3 13l4 4h10l4-4"/></svg>Inbox</button>
-        <button role="tab" aria-selected="false" data-icon="crm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg>CRM</button>
-        <button role="tab" aria-selected="false" data-icon="agenda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.5"/><path d="M4 21c1.5-4 5-5.5 8-5.5s6.5 1.5 8 5.5"/></svg>Agenda</button>
+        <button class="on" role="tab" aria-selected="true" data-icon="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span class="lbl">Campanhas</span></button>
+        <button role="tab" aria-selected="false" data-icon="inbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l2.5-8h13L21 13v6H3z"/><path d="M3 13l4 4h10l4-4"/></svg><span class="lbl">Inbox</span></button>
+        <button role="tab" aria-selected="false" data-icon="crm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6 3"/></svg><span class="lbl">CRM</span></button>
+        <button role="tab" aria-selected="false" data-icon="agenda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.5"/><path d="M4 21c1.5-4 5-5.5 8-5.5s6.5 1.5 8 5.5"/></svg><span class="lbl">Agenda</span></button>
       </div>
     </nav>
   </section>

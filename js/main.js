@@ -26,7 +26,7 @@ function showApp() {
   topbar.hidden = false;
   stage.hidden = false;
   hint.hidden = false;
-  requestAnimationFrame(() => moveNotch(document.querySelector('.dock-items button.on')));
+  requestAnimationFrame(() => placeSlot(document.querySelector('.dock-items button.on')));
 }
 bC.onclick = () => setMode(false);
 bO.onclick = () => setMode(true);
@@ -60,29 +60,60 @@ try { if (sessionStorage.getItem('omniduo_auth') === '1') showApp(); } catch {}
 document.getElementById('forgot').onclick = (e) => { e.preventDefault(); authErr.textContent = 'Link de recuperação enviado (demo).'; };
 document.getElementById('signup').onclick = (e) => { e.preventDefault(); authErr.textContent = 'Cadastro demo — use qualquer email.'; };
 
-// liquid dock com notch deslizante (img2 + img3): so transform/opacity
-const notch = document.getElementById('notchClosed');
+// dock: aba ativa vira circulo elevado; slot concavo acompanha via --notch-x
+const dock = document.querySelector('.liquid-dock');
 const dockBtns = Array.from(document.querySelectorAll('.dock-items button'));
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-function moveNotch(btn) {
-  if (!btn || !notch) return;
-  if (reduceMotion) { notch.style.transition = 'none'; }
-  const dock = btn.parentElement.getBoundingClientRect();
-  const r = btn.getBoundingClientRect();
-  const x = r.left - dock.left + r.width / 2 - 30;
-  notch.style.transform = `translateX(${x}px)`;
-  const svg = btn.querySelector('svg');
-  if (svg) notch.innerHTML = svg.outerHTML;
+function placeSlot(btn) {
+  if (!btn || !dock) return;
+  const x = btn.offsetLeft + btn.offsetWidth / 2;
+  dock.style.setProperty('--notch-x', `${x}px`);
 }
-dockBtns.forEach((b) => {
-  b.addEventListener('click', () => {
-    dockBtns.forEach((x) => { x.classList.remove('on'); x.setAttribute('aria-selected', 'false'); });
-    b.classList.add('on');
-    b.setAttribute('aria-selected', 'true');
-    moveNotch(b);
+function setActiveTab(btn) {
+  dockBtns.forEach((x) => { x.classList.remove('on'); x.setAttribute('aria-selected', 'false'); });
+  btn.classList.add('on');
+  btn.setAttribute('aria-selected', 'true');
+  placeSlot(btn);
+}
+dockBtns.forEach((b) => b.addEventListener('click', () => setActiveTab(b)));
+addEventListener('resize', () => placeSlot(document.querySelector('.dock-items button.on')));
+
+// sheet arrastavel: snap meio (0) / expandida (-190), so transform
+const sheet = document.getElementById('sheet');
+const handle = document.getElementById('sheetHandle');
+const SNAP_MIN = -190, SNAP_MAX = 0;
+let sheetY = 0;
+function setSheet(y, expanded) {
+  sheetY = Math.max(SNAP_MIN, Math.min(SNAP_MAX, y));
+  sheet.style.transform = `translateY(${sheetY}px)`;
+  const open = expanded !== undefined ? expanded : sheetY < -95;
+  sheet.classList.toggle('open', open);
+  if (handle) handle.setAttribute('aria-valuenow', open ? '1' : '0');
+}
+if (sheet && handle && !reduceMotion) {
+  let startY = 0, baseY = 0, dragging = false;
+  handle.addEventListener('pointerdown', (e) => {
+    dragging = true; startY = e.clientY; baseY = sheetY;
+    handle.setPointerCapture(e.pointerId);
+    sheet.style.transition = 'none';
   });
-});
-addEventListener('resize', () => moveNotch(document.querySelector('.dock-items button.on')));
+  handle.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    setSheet(baseY + (e.clientY - startY));
+  });
+  const end = () => {
+    if (!dragging) return;
+    dragging = false;
+    sheet.style.transition = '';
+    setSheet(sheetY);
+  };
+  handle.addEventListener('pointerup', end);
+  handle.addEventListener('pointercancel', end);
+  handle.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp') { e.preventDefault(); setSheet(SNAP_MIN, true); }
+    if (e.key === 'ArrowDown') { e.preventDefault(); setSheet(SNAP_MAX, false); }
+  });
+}
 
 // rail lateral (img1)
 const railBtns = Array.from(document.querySelectorAll('.rail button'));

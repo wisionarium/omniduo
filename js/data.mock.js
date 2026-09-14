@@ -3,7 +3,8 @@ window.OMNIDUO_MOCK = {
   notifications: [
     { app: "IG", title: "Instagram · agora", body: "@camila.fit comentou QUERO no reel do whey" },
     { app: "DM", title: "Direct · 2 min", body: "Tabela enviada + link wa.me para Camila" },
-    { app: "WA", title: "WhatsApp · 5 min", body: "@camila.fit tocou em Chamar no WhatsApp" }
+    { app: "WA", title: "WhatsApp · 5 min", body: "@camila.fit tocou em Chamar no WhatsApp" },
+    { app: "IG", title: "Instagram · 12 min", body: "@tati.muscle comentou QUERO e reservou o kit" }
   ],
   campaigns: [
     { id: "whey", thumb: "Q", title: "Sorteio whey — comenta QUERO", meta: "reel específico · 4.832 comentários", status: "ATIVA" },
