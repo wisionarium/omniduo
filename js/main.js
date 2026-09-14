@@ -26,7 +26,7 @@ function showApp() {
   topbar.hidden = false;
   stage.hidden = false;
   hint.hidden = false;
-  requestAnimationFrame(() => placeSlot(document.querySelector('.dock-items button.on')));
+  requestAnimationFrame(() => setActiveTab(document.querySelector('.dock-items button.on'), true));
 }
 bC.onclick = () => setMode(false);
 bO.onclick = () => setMode(true);
@@ -60,23 +60,51 @@ try { if (sessionStorage.getItem('omniduo_auth') === '1') showApp(); } catch {}
 document.getElementById('forgot').onclick = (e) => { e.preventDefault(); authErr.textContent = 'Link de recuperação enviado (demo).'; };
 document.getElementById('signup').onclick = (e) => { e.preventDefault(); authErr.textContent = 'Cadastro demo — use qualquer email.'; };
 
-// dock: aba ativa vira circulo elevado; slot concavo acompanha via --notch-x
+// dock: circulo verde DESLIZA de aba em aba (transform), slot concavo acompanha
 const dock = document.querySelector('.liquid-dock');
+const slider = document.getElementById('dockSlider');
 const dockBtns = Array.from(document.querySelectorAll('.dock-items button'));
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-function placeSlot(btn) {
-  if (!btn || !dock) return;
-  const x = btn.offsetLeft + btn.offsetWidth / 2;
-  dock.style.setProperty('--notch-x', `${x}px`);
+let sliderX = 0, sliderAnim = null;
+function sliderTarget(btn) {
+  const dockR = dock.getBoundingClientRect();
+  const r = btn.getBoundingClientRect();
+  return r.left - dockR.left + r.width / 2 - 29;
 }
-function setActiveTab(btn) {
+function paintSlider(x) {
+  sliderX = x;
+  slider.style.transform = `translateX(${x}px)`;
+  dock.style.setProperty('--notch-x', `${x + 29}px`);
+}
+function easeOutBack(t) {
+  const c = 1.4;
+  return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2);
+}
+function setActiveTab(btn, instant = false) {
   dockBtns.forEach((x) => { x.classList.remove('on'); x.setAttribute('aria-selected', 'false'); });
   btn.classList.add('on');
   btn.setAttribute('aria-selected', 'true');
-  placeSlot(btn);
+  const svg = btn.querySelector('svg');
+  if (svg) slider.innerHTML = svg.outerHTML;
+  const to = sliderTarget(btn);
+  if (instant || reduceMotion) {
+    cancelAnimationFrame(sliderAnim);
+    paintSlider(to);
+    return;
+  }
+  cancelAnimationFrame(sliderAnim);
+  const from = sliderX, t0 = performance.now(), dur = 420;
+  slider.style.willChange = 'transform';
+  const step = (t) => {
+    const p = Math.min(1, (t - t0) / dur);
+    paintSlider(from + (to - from) * easeOutBack(p));
+    if (p < 1) sliderAnim = requestAnimationFrame(step);
+    else slider.style.willChange = '';
+  };
+  sliderAnim = requestAnimationFrame(step);
 }
 dockBtns.forEach((b) => b.addEventListener('click', () => setActiveTab(b)));
-addEventListener('resize', () => placeSlot(document.querySelector('.dock-items button.on')));
+addEventListener('resize', () => setActiveTab(document.querySelector('.dock-items button.on'), true));
 
 // sheet arrastavel: snap meio (0) / expandida (-190), so transform
 const sheet = document.getElementById('sheet');
