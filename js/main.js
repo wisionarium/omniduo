@@ -48,6 +48,7 @@ function computeLayout() {
 function applyLayout() {
   const l = computeLayout();
   app.dataset.layout = l;
+  document.body.dataset.layout = l;
   layoutLabel.textContent = l === 'open' ? 'Aberta · completo' : 'Fechada · essencial';
   $$('.menu-pop [data-layout-pref]').forEach((b) =>
     b.setAttribute('aria-pressed', String(b.dataset.layoutPref === layoutPref)));
