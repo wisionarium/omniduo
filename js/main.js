@@ -106,6 +106,7 @@ function setTab(tab, opts = {}) {
   });
   $$('#openView .rail button').forEach((b) => b.classList.toggle('on', b.dataset.tab === tab));
   $$('#closedView .panel').forEach((p) => { p.hidden = p.dataset.panel !== tab; });
+  if (tab === 'inbox' && app.dataset.layout === 'closed') backToChats();
   if (location.hash !== '#/' + tab && !opts.noHash) history.replaceState(null, '', '#/' + tab);
   if (app.dataset.layout === 'open' && !opts.noScroll) {
     const pane = $('#pane-' + tab);
@@ -124,7 +125,7 @@ $$('#openView .rail button').forEach((b) => b.onclick = () => setTab(b.dataset.t
 })();
 
 /* ---------- dados ---------- */
-const state = { stats: { comments: 0, dms: 0, leads: 0 }, campaigns: [], inbox: [], crm: { novo: [], zap: [], fechado: [] }, agenda: [], notifs: [] };
+const state = { stats: { comments: 0, dms: 0, leads: 0 }, campaigns: [], chats: [], crm: { novo: [], zap: [], fechado: [] }, agenda: [], notifs: [] };
 const fmt = (v) => Number(v).toLocaleString('pt-BR');
 
 function renderStats() {
@@ -166,20 +167,76 @@ function msgEl(m) {
   d.querySelector('span').textContent = m.text;
   return d;
 }
-function renderInbox() {
+/* inbox estilo WhatsApp: lista -> conversa */
+let activeChatId = null;
+function activeChat() {
+  return state.chats.find((c) => c.id === activeChatId) || state.chats[0];
+}
+function lastMsg(c) {
+  return c.messages[c.messages.length - 1];
+}
+function chatRow(c) {
+  const b = document.createElement('button');
+  b.className = 'chat-row' + (c.id === activeChatId ? ' on' : '');
+  b.type = 'button';
+  const lm = lastMsg(c);
+  b.innerHTML = `<span class="avatar"></span><span class="chat-main"><span class="chat-top"><b></b><i></i></span><span class="chat-sub"><span></span><em></em></span></span>`;
+  b.querySelector('.avatar').textContent = c.name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+  b.querySelector('.chat-top b').textContent = c.name;
+  b.querySelector('.chat-top i').textContent = c.time;
+  b.querySelector('.chat-sub span').textContent = lm ? ((lm.mine ? 'Você: ' : '') + lm.text) : '';
+  const badge = b.querySelector('.chat-sub em');
+  if (c.unread > 0) { badge.textContent = c.unread; badge.className = 'unread'; }
+  else badge.remove();
+  b.onclick = () => openChat(c.id);
+  return b;
+}
+function renderChatLists() {
+  const a = $('#chatListClosed'), o = $('#chatListOpen');
+  a.innerHTML = ''; o.innerHTML = '';
+  state.chats.forEach((c) => { a.appendChild(chatRow(c)); o.appendChild(chatRow(c)); });
+  const total = state.chats.reduce((n, c) => n + (c.unread || 0), 0);
+  $('#inboxUnreadClosed').textContent = total ? total + ' não lidas' : 'em dia';
+}
+function renderThread() {
+  const c = activeChat();
+  if (!c) return;
   const a = $('#threadClosed'), o = $('#threadOpen');
   a.innerHTML = ''; o.innerHTML = '';
-  state.inbox.forEach((m) => { a.appendChild(msgEl(m)); o.appendChild(msgEl(m)); });
+  c.messages.forEach((m) => { a.appendChild(msgEl(m)); o.appendChild(msgEl(m)); });
+  $('#chatNameClosed').textContent = c.name;
+  $('#chatNameOpen').textContent = c.name;
+  $('#chatMetaOpen').textContent = c.handle + ' · ' + c.origin;
+  a.scrollTop = a.scrollHeight; o.scrollTop = o.scrollHeight;
 }
+function renderInbox() { renderChatLists(); renderThread(); }
+function openChat(id, fromNotif) {
+  activeChatId = id;
+  const c = activeChat();
+  c.unread = 0;
+  renderChatLists(); renderThread();
+  // fechada: sai da lista e abre a conversa
+  if (app.dataset.layout === 'closed' || fromNotif === 'closed') {
+    $('#chatListViewClosed').hidden = true;
+    $('#chatDetailViewClosed').hidden = false;
+  }
+}
+function backToChats() {
+  $('#chatListViewClosed').hidden = false;
+  $('#chatDetailViewClosed').hidden = true;
+}
+$('#chatBackClosed').onclick = backToChats;
 function sendMsg(text) {
   if (!text.trim()) return;
-  const m = { from: 'Você', text: text.trim(), mine: true };
-  state.inbox.push(m);
+  const c = activeChat();
+  if (!c) return;
+  c.messages.push({ from: 'Você', text: text.trim(), mine: true });
+  c.time = 'agora';
   state.stats.dms += 1; renderStats(); renderInbox();
-  toast('Resposta enviada');
+  toast('Resposta enviada p/ ' + c.name);
   setTimeout(() => {
-    state.inbox.push({ from: '@lead', text: 'Boa! Manda no Zap?', mine: false });
-    renderInbox(); toast('Nova resposta do lead');
+    c.messages.push({ from: c.handle, text: 'Boa! Manda no Zap?' });
+    renderInbox(); toast('Nova resposta de ' + c.name);
   }, 1200);
 }
 $('#composerClosed').addEventListener('submit', (e) => {
@@ -294,8 +351,8 @@ handle.onclick = () => {
     if (!api) return;
     state.stats = await api.stats();
     state.campaigns = await api.campaigns();
-    const inbox = await api.inbox();
-    state.inbox = inbox.map((m, i) => ({ from: m.from || (i % 2 ? 'Você' : '@lead'), text: m.text, mine: i % 2 === 1 }));
+    state.chats = await api.inbox();
+    activeChatId = state.chats[0] && state.chats[0].id;
     const crm = await api.crm();
     state.crm = { novo: [...crm.novo], zap: [...crm.zap], fechado: [...crm.fechado] };
     state.agenda = await api.agenda();

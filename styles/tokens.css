@@ -127,11 +127,36 @@ body[data-layout="closed"] .topbar,body[data-layout="closed"] .app{max-width:430
 .pill{margin-left:auto;font-size:10px;font-weight:800;padding:5px 9px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
 .pill.on{background:linear-gradient(135deg,#34d399,#16a34a);border-color:transparent;color:#04160b}
 .pill.off{background:var(--surface-2);color:var(--ink-2)}
-.thread{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+.thread{display:flex;flex-direction:column;gap:8px;margin-bottom:8px;overflow-y:auto;min-height:120px;max-height:320px;padding:4px 2px}
 .msg{max-width:88%;padding:9px 11px;border-radius:14px;font-size:13px}
 .msg.in{background:var(--surface-2);border:1px solid var(--line);border-bottom-left-radius:4px;align-self:flex-start}
 .msg.out{background:linear-gradient(135deg,rgba(47,123,255,.28),rgba(124,58,237,.28));border:1px solid var(--line);border-bottom-right-radius:4px;align-self:flex-end}
 .msg small{display:block;font-size:10px;color:var(--ink-2);margin-bottom:2px}
+/* inbox estilo WhatsApp: lista de conversas */
+.chat-list{display:flex;flex-direction:column;gap:2px}
+.chat-row{display:flex;gap:10px;align-items:center;width:100%;background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--ink);font:inherit;padding:10px 6px;cursor:pointer;min-height:64px;text-align:left;border-radius:10px}
+.chat-row:last-child{border-bottom:0}
+.chat-row.on{background:var(--surface-2)}
+.avatar{width:42px;height:42px;flex:none;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:13px;color:#fff;background:linear-gradient(135deg,var(--brand1),var(--brand2));border:1px solid var(--line)}
+.chat-main{flex:1;min-width:0}
+.chat-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.chat-top b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-top i{font-style:normal;font-size:10px;color:var(--ink-2);flex:none}
+.chat-sub{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:2px}
+.chat-sub span{font-size:12px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.chat-sub .unread{font-style:normal;font-size:10px;font-weight:800;background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#fff;border-radius:999px;min-width:20px;height:20px;display:grid;place-items:center;padding:0 6px;flex:none}
+.chat-back{border:0;background:transparent;color:var(--ink);font:inherit;font-weight:700;font-size:15px;cursor:pointer;padding:8px 4px;min-height:44px;text-align:left}
+.chat-back span{font-size:14px}
+.chat-detail-view .thread{min-height:200px}
+.chat-detail-head{padding:2px 2px 10px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.chat-detail-head b{font-size:14px;display:block}
+.chat-detail-head small{font-size:11px;color:var(--ink-2)}
+/* split WhatsApp Web no modo aberto */
+.wa-split{display:grid;grid-template-columns:230px minmax(0,1fr);gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;min-height:340px}
+.wa-split .chat-list{border-right:1px solid var(--line);padding:6px;overflow-y:auto;max-height:460px}
+.wa-split .chat-list .chat-row{border-bottom:0}
+.wa-split .chat-detail{display:flex;flex-direction:column;padding:10px;min-width:0}
+.wa-split .chat-detail .thread{flex:1}
 .composer{display:flex;gap:8px}
 .composer input{flex:1;min-height:var(--tap);border-radius:12px;border:1px solid var(--line);background:color-mix(in srgb,var(--bg) 55%,transparent);color:var(--ink);padding:10px 12px;font-size:14px}
 .composer input:focus{outline:2px solid var(--brand1)}

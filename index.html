@@ -82,13 +82,19 @@
         <h3>Campanhas</h3>
         <div class="camp-list" id="campListClosed"></div>
       </section>
-      <section class="panel" id="panel-inbox" data-panel="inbox" aria-label="Inbox" hidden>
-        <h3>Inbox <small id="inboxHint">toque p/ responder</small></h3>
-        <div class="thread" id="threadClosed"></div>
-        <form class="composer" id="composerClosed">
-          <input type="text" id="composerInputClosed" placeholder="Responder…" aria-label="Responder" autocomplete="off">
-          <button type="submit" aria-label="Enviar">↑</button>
-        </form>
+      <section class="panel wa" id="panel-inbox" data-panel="inbox" aria-label="Inbox" hidden>
+        <div class="chat-list-view" id="chatListViewClosed">
+          <h3>Inbox <small id="inboxUnreadClosed"></small></h3>
+          <div class="chat-list" id="chatListClosed"></div>
+        </div>
+        <div class="chat-detail-view" id="chatDetailViewClosed" hidden>
+          <button class="chat-back" id="chatBackClosed" type="button">‹ <span id="chatNameClosed">Conversa</span></button>
+          <div class="thread" id="threadClosed"></div>
+          <form class="composer" id="composerClosed">
+            <input type="text" id="composerInputClosed" placeholder="Responder…" aria-label="Responder" autocomplete="off">
+            <button type="submit" aria-label="Enviar">↑</button>
+          </form>
+        </div>
       </section>
       <section class="panel" id="panel-crm" data-panel="crm" aria-label="CRM" hidden>
         <h3>CRM <small>toque no lead p/ avançar</small></h3>
@@ -131,14 +137,20 @@
         <p class="sub">Private reply · 1 DM por comentário</p>
         <div class="camp-list" id="campListOpen"></div>
       </div>
-      <div class="pane" id="pane-inbox" tabindex="-1">
-        <h3>Inbox — detalhe</h3>
+      <div class="pane wa" id="pane-inbox" tabindex="-1">
+        <h3>Inbox</h3>
         <p class="sub">Janela 24h · fora dela só marketing</p>
-        <div class="thread" id="threadOpen"></div>
-        <form class="composer" id="composerOpen">
-          <input type="text" id="composerInputOpen" placeholder="Responder como OmniDuo…" aria-label="Responder" autocomplete="off">
-          <button type="submit" aria-label="Enviar">↑</button>
-        </form>
+        <div class="wa-split">
+          <div class="chat-list" id="chatListOpen" role="tablist" aria-label="Conversas"></div>
+          <div class="chat-detail">
+            <div class="chat-detail-head"><b id="chatNameOpen">Conversa</b><small id="chatMetaOpen"></small></div>
+            <div class="thread" id="threadOpen"></div>
+            <form class="composer" id="composerOpen">
+              <input type="text" id="composerInputOpen" placeholder="Responder como OmniDuo…" aria-label="Responder" autocomplete="off">
+              <button type="submit" aria-label="Enviar">↑</button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
     <div class="col stack">

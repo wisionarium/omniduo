@@ -12,8 +12,26 @@ window.OMNIDUO_MOCK = {
     { id: "live", thumb: "S", title: "Live de dúvidas — comenta LINK", meta: "próximo post · rascunho", status: "PAUSADA" }
   ],
   inbox: [
-    { from: "@rafa.lima", text: "Comentou PREÇO no carrossel" },
-    { from: "OmniDuo", text: "Te mandei a tabela no privado, Rafa. Quer no Zap também?" }
+    { id: "camila", name: "Camila Fit", handle: "@camila.fit", time: "14:02", unread: 2, origin: "reel QUERO",
+      messages: [
+        { from: "@camila.fit", text: "Comentou QUERO no reel do whey" },
+        { from: "Você", text: "Te mandei a tabela no privado, Camila! Quer no Zap também?", mine: true },
+        { from: "@camila.fit", text: "Quero! Manda aqui" }
+      ] },
+    { id: "rafa", name: "Rafa Lima", handle: "@rafa.lima", time: "13:47", unread: 0, origin: "carrossel PREÇO",
+      messages: [
+        { from: "@rafa.lima", text: "Comentou PREÇO no carrossel" },
+        { from: "Você", text: "Te mandei a tabela no privado, Rafa. Quer no Zap também?", mine: true }
+      ] },
+    { id: "ju", name: "Ju Costa", handle: "@ju.costa", time: "12:15", unread: 1, origin: "wa.me",
+      messages: [
+        { from: "@ju.costa", text: "Oi! Vim pelo Instagram, me passa o valor do kit?" }
+      ] },
+    { id: "tati", name: "Tati Muscle", handle: "@tati.muscle", time: "ontem", unread: 0, origin: "reel QUERO",
+      messages: [
+        { from: "@tati.muscle", text: "Comentou QUERO e reservou o kit" },
+        { from: "Você", text: "Kit reservado, Tati! Te chamo na sexta pra fechar.", mine: true }
+      ] }
   ],
   crm: {
     novo: [{ user: "@camila.fit", meta: "reel 12/09 · QUERO" }, { user: "@rafa.lima", meta: "reel 12/09 · QUERO" }],
