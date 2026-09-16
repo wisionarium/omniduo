@@ -85,8 +85,19 @@ form.addEventListener('submit', (e) => {
 });
 $('#forgot').onclick = (e) => { e.preventDefault(); authErr.textContent = 'Link de recuperação enviado (demo).'; };
 $('#signup').onclick = (e) => { e.preventDefault(); authErr.textContent = 'Cadastro demo — use qualquer email.'; };
-$('#btnLogout').onclick = () => { try { sessionStorage.removeItem('omniduo_auth'); } catch {} location.reload(); };
+$('#btnLogout').onclick = async () => {
+  try { await window.OmniAPI.logout(); } catch {}
+  try { sessionStorage.removeItem('omniduo_auth'); } catch {}
+  location.href = './';
+};
 try { if (sessionStorage.getItem('omniduo_auth') === '1') showApp(); } catch {}
+// Sessão real (Facebook) tem prioridade sobre a demo local.
+(async () => {
+  try {
+    const me = await window.OmniAPI.me();
+    if (me && me.logged) showApp();
+  } catch { /* offline: mantém mock/demo */ }
+})();
 addEventListener('keydown', (e) => {
   if (e.target.matches('input,textarea')) return;
   if (e.key === 'f' || e.key === 'F') { layoutPref = app.dataset.layout === 'open' ? 'closed' : 'open'; applyLayout(); }
