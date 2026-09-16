@@ -6,7 +6,7 @@ const { setCookie } = require('../_session');
 // App de Login consumidor: só permissões básicas. Escopos de Pages/Instagram
 // (pages_show_list, instagram_basic etc.) pertencem ao app de messaging (Fase 4),
 // que usa Facebook Login for Business em app separado.
-const SCOPES = ['public_profile', 'email'].join(',');
+const SCOPES = ['public_profile'].join(',');
 
 module.exports = (req, res) => {
   const appId = process.env.META_APP_ID;

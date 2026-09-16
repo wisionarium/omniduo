@@ -70,7 +70,7 @@ module.exports = async (req, res) => {
       ig_id: igId,
       access_token_encrypted: token,
       token_expires_at: expiresAt,
-      scopes: ['public_profile', 'email'],
+      scopes: ['public_profile'],
       updated_at: new Date().toISOString(),
     };
     const r = await fetch(`${supaUrl()}/rest/v1/meta_connections?on_conflict=fb_user_id`, {
