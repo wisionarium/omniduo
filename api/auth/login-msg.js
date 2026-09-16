@@ -1,22 +1,20 @@
-// GET /api/auth/login-msg — OAuth do app OmniDuo Messaging (Facebook Login for Business).
-// Escopos de Instagram messaging; concedidos em modo dev pelo admin.
+// GET /api/auth/login-msg — OAuth do app OmniDuo Messaging via
+// Instagram Business Login (instagram_business_*). Host: instagram.com,
+// token em api.instagram.com, API em graph.instagram.com.
+// Requer envs: META_IG_APP_ID (= ID do app do Instagram), APP_URL.
 const crypto = require('crypto');
 const { setCookie } = require('../_session');
 
 const SCOPES = [
-  'instagram_basic',
-  'instagram_manage_comments',
-  'instagram_manage_messages',
-  'pages_show_list',
-  'pages_read_engagement',
-  'pages_manage_metadata',
-  'pages_messaging',
+  'instagram_business_basic',
+  'instagram_business_manage_comments',
+  'instagram_business_manage_messages',
 ].join(',');
 
 module.exports = (req, res) => {
-  const appId = process.env.META_MSG_APP_ID;
+  const appId = process.env.META_IG_APP_ID;
   if (!appId) {
-    res.status(500).json({ ok: false, error: 'missing_meta_msg_config', detail: 'META_MSG_APP_ID ausente na Vercel' });
+    res.status(500).json({ ok: false, error: 'missing_ig_config', detail: 'META_IG_APP_ID ausente na Vercel' });
     return;
   }
   const host = (req.headers && (req.headers['x-forwarded-host'] || req.headers.host)) || '';
@@ -29,7 +27,7 @@ module.exports = (req, res) => {
   setCookie(res, 'omn_state', state, { maxAge: 600 });
   const redirectUri = encodeURIComponent(`${appUrl}/api/auth/callback-msg`);
   const url =
-    `https://www.facebook.com/v21.0/dialog/oauth` +
+    `https://www.instagram.com/oauth/authorize` +
     `?client_id=${encodeURIComponent(appId)}` +
     `&redirect_uri=${redirectUri}` +
     `&state=${state}` +

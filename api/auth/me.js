@@ -3,14 +3,16 @@ const { parseCookies, verifySession, supaHeaders, supaUrl } = require('../_sessi
 
 module.exports = async (req, res) => {
   const ref = verifySession(parseCookies(req).omn_session);
-  if (!ref || !ref.startsWith('fb:')) {
+  if (!ref || (!ref.startsWith('fb:') && !ref.startsWith('ig:'))) {
     res.status(200).json({ ok: true, logged: false });
     return;
   }
-  const fbId = ref.slice(3);
+  const kind = ref.slice(0, 2);
+  const id = ref.slice(3);
+  const col = kind === 'ig' ? 'ig_id' : 'fb_user_id';
   try {
     const r = await fetch(
-      `${supaUrl()}/rest/v1/meta_connections?fb_user_id=eq.${encodeURIComponent(fbId)}&select=fb_user_id,page_id,ig_id,token_expires_at,scopes`,
+      `${supaUrl()}/rest/v1/meta_connections?${col}=eq.${encodeURIComponent(id)}&select=fb_user_id,page_id,ig_id,webhook_subscribed,token_expires_at,scopes`,
       { headers: supaHeaders() }
     );
     const rows = await r.json().catch(() => []);
