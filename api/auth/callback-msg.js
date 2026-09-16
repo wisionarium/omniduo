@@ -54,14 +54,34 @@ module.exports = async (req, res) => {
       : null;
 
     const me = await fbGet('/me', { fields: 'id,name', access_token: token });
-    let pageId = null, igId = null;
+    let pageId = null, igId = null, pageToken = null;
     const accs = await fbGet('/me/accounts', {
-      fields: 'id,name,instagram_business_account{id,username}', access_token: token,
+      fields: 'id,name,access_token,instagram_business_account{id,username}', access_token: token,
     });
     const pg = (accs.data || []).find((p) => p.instagram_business_account) || (accs.data || [])[0] || null;
     if (pg) {
       pageId = pg.id;
+      pageToken = pg.access_token || null;
       if (pg.instagram_business_account) igId = pg.instagram_business_account.id;
+    }
+
+    // Assina a Page no app (equivale ao "Gere tokens" manual): sem isso,
+    // o webhook configurado no dashboard não entrega eventos.
+    let subscribed = false;
+    if (pageId && pageToken) {
+      try {
+        const s = await fetch(`https://graph.facebook.com/v21.0/${pageId}/subscribed_apps`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            access_token: pageToken,
+            subscribed_fields: 'messages,messaging_postbacks,message_echoes,feed',
+          }),
+        });
+        subscribed = s.ok;
+      } catch {
+        subscribed = false;
+      }
     }
 
     const row = {
@@ -70,6 +90,8 @@ module.exports = async (req, res) => {
       page_id: pageId,
       ig_id: igId,
       access_token_encrypted: token,
+      page_token_encrypted: pageToken,
+      webhook_subscribed: subscribed,
       token_expires_at: expiresAt,
       scopes: MSG_SCOPES,
       updated_at: new Date().toISOString(),
