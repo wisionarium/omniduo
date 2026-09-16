@@ -47,8 +47,13 @@ module.exports = async (req, res) => {
 
   try {
     const raw = await readRaw(req);
-    const secret = process.env.META_MSG_APP_SECRET || process.env.META_APP_SECRET;
-    if (!validSignature(raw, req.headers['x-hub-signature-256'], secret)) {
+    const header = req.headers['x-hub-signature-256'];
+    const secrets = [
+      process.env.META_IG_APP_SECRET,
+      process.env.META_MSG_APP_SECRET,
+      process.env.META_APP_SECRET,
+    ].filter(Boolean);
+    if (!secrets.some((s) => validSignature(raw, header, s))) {
       res.status(401).json({ ok: false, error: 'bad_signature' });
       return;
     }
