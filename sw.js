@@ -1,5 +1,5 @@
-/* OmniDuo shell cache — offline-first para teste */
-const CACHE = 'omniduo-v1';
+/* OmniDuo shell cache — HTML sempre fresco (network-first), assets em cache */
+const CACHE = 'omniduo-v2';
 const SHELL = [
   './',
   './index.html',
@@ -29,6 +29,17 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(request.url);
   if (url.pathname.startsWith('/api/')) {
     e.respondWith(fetch(request).catch(() => caches.match('./index.html')));
+    return;
+  }
+  // Navegação (index.html): network-first pra nunca prender HTML velho.
+  if (request.mode === 'navigate') {
+    e.respondWith(
+      fetch(request).then((res) => {
+        const copy = res.clone();
+        caches.open(CACHE).then((c) => c.put('./index.html', copy)).catch(() => {});
+        return res;
+      }).catch(() => caches.match('./index.html'))
+    );
     return;
   }
   e.respondWith(
